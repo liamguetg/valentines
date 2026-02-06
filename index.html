@@ -3,41 +3,225 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Valentine's Day</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
-  <style>
-    .gradient-background {
-      background: linear-gradient(180deg, rgba(255, 208, 229, 1) 0%, rgba(255, 232, 242, 1) 36%, rgba(255, 255, 255, 1) 100%);
-    }
-    .bounce2 {
-      animation: bounce2 2s ease infinite;
-    }
-    @keyframes bounce2 {
-      0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
-      40% { transform: translateY(-20px); }
-      60% { transform: translateY(-10px); }
-    }
-  </style>
+  <title>Will You Be My Valentine?</title>
+  <link rel="stylesheet" href="style.css">
 </head>
-<body class="gradient-background">
-  <div class="flex items-center justify-center h-screen">
-    <div class="flex flex-col items-center p-4 text-center">
-      <img id="imageDisplay" src="./images/image1.gif" alt="Cute dancing duck with hearts" class="rounded-md h-[300px]" style="object-fit: cover;" />
-      <h2 id="valentineQuestion" class="text-4xl font-bold italic text-[#bd1e59] my-4 text-center">Will you be my Valentine?</h2>
-      <div class="flex gap-4 pt-[20px] items-center" id="responseButtons">
-        <button id="yesButton"
-          class="bounce2 inline-flex items-center justify-center whitespace-nowrap rounded-md text-[20px] font-medium hover:bg-green-400 min-h-12 min-w-[75px] px-4 py-2 bg-green-500 text-white transition">
-          Yes
-        </button>
-        <button id="noButton"
-          class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-[20px] font-medium hover:bg-red-700 h-12 min-w-[75px] w-auto px-4 py-2 bg-red-500 text-white">
-          No
-        </button>
+<body>
+  <!-- First Page: Question Page -->
+  <div id="questionPage" class="page active">
+    <!-- Photo Background - 6 columns with 4 photos each (duplicated for infinite scroll) -->
+    <div class="photo-background">
+      <!-- Column 1: photos 1-4 (scrolling up) -->
+      <div class="photo-column scroll-up">
+        <div class="photo-item" style="background-image: url('./images/photo1.jpg');"></div>
+        <div class="photo-item" style="background-image: url('./images/photo2.jpg');"></div>
+        <div class="photo-item" style="background-image: url('./images/photo3.JPG');"></div>
+        <div class="photo-item" style="background-image: url('./images/photo4.jpg');"></div>
+        <!-- Duplicate for seamless loop -->
+        <div class="photo-item" style="background-image: url('./images/photo1.jpg');"></div>
+        <div class="photo-item" style="background-image: url('./images/photo2.jpg');"></div>
+        <div class="photo-item" style="background-image: url('./images/photo3.JPG');"></div>
+        <div class="photo-item" style="background-image: url('./images/photo4.jpg');"></div>
+      </div>
+      <!-- Column 2: photos 5-8 (scrolling down) -->
+      <div class="photo-column scroll-down">
+        <div class="photo-item" style="background-image: url('./images/photo5.jpg');"></div>
+        <div class="photo-item" style="background-image: url('./images/photo6.JPG');"></div>
+        <div class="photo-item" style="background-image: url('./images/photo7.jpg');"></div>
+        <div class="photo-item" style="background-image: url('./images/photo8.jpg');"></div>
+        <!-- Duplicate for seamless loop -->
+        <div class="photo-item" style="background-image: url('./images/photo5.jpg');"></div>
+        <div class="photo-item" style="background-image: url('./images/photo6.JPG');"></div>
+        <div class="photo-item" style="background-image: url('./images/photo7.jpg');"></div>
+        <div class="photo-item" style="background-image: url('./images/photo8.jpg');"></div>
+      </div>
+      <!-- Column 3: photos 9-12 (scrolling up) -->
+      <div class="photo-column scroll-up">
+        <div class="photo-item" style="background-image: url('./images/photo9.JPG');"></div>
+        <div class="photo-item" style="background-image: url('./images/photo10.jpeg');"></div>
+        <div class="photo-item" style="background-image: url('./images/photo11.png');"></div>
+        <div class="photo-item" style="background-image: url('./images/photo12.jpeg');"></div>
+        <!-- Duplicate for seamless loop -->
+        <div class="photo-item" style="background-image: url('./images/photo9.JPG');"></div>
+        <div class="photo-item" style="background-image: url('./images/photo10.jpeg');"></div>
+        <div class="photo-item" style="background-image: url('./images/photo11.png');"></div>
+        <div class="photo-item" style="background-image: url('./images/photo12.jpeg');"></div>
+      </div>
+      <!-- Column 4: photos 13-16 (scrolling down) -->
+      <div class="photo-column scroll-down">
+        <div class="photo-item" style="background-image: url('./images/photo13.jpeg');"></div>
+        <div class="photo-item" style="background-image: url('./images/photo14.jpeg');"></div>
+        <div class="photo-item" style="background-image: url('./images/photo15.jpeg');"></div>
+        <div class="photo-item" style="background-image: url('./images/photo16.jpeg');"></div>
+        <!-- Duplicate for seamless loop -->
+        <div class="photo-item" style="background-image: url('./images/photo13.jpeg');"></div>
+        <div class="photo-item" style="background-image: url('./images/photo14.jpeg');"></div>
+        <div class="photo-item" style="background-image: url('./images/photo15.jpeg');"></div>
+        <div class="photo-item" style="background-image: url('./images/photo16.jpeg');"></div>
+      </div>
+      <!-- Column 5: photos 17-20 (scrolling up) -->
+      <div class="photo-column scroll-up">
+        <div class="photo-item" style="background-image: url('./images/photo17.jpeg');"></div>
+        <div class="photo-item" style="background-image: url('./images/photo18.jpeg');"></div>
+        <div class="photo-item" style="background-image: url('./images/photo19.jpeg');"></div>
+        <div class="photo-item" style="background-image: url('./images/photo20.jpeg');"></div>
+        <!-- Duplicate for seamless loop -->
+        <div class="photo-item" style="background-image: url('./images/photo17.jpeg');"></div>
+        <div class="photo-item" style="background-image: url('./images/photo18.jpeg');"></div>
+        <div class="photo-item" style="background-image: url('./images/photo19.jpeg');"></div>
+        <div class="photo-item" style="background-image: url('./images/photo20.jpeg');"></div>
+      </div>
+      <!-- Column 6: photos 21-24 (scrolling down) -->
+      <div class="photo-column scroll-down">
+        <div class="photo-item" style="background-image: url('./images/photo21.jpeg');"></div>
+        <div class="photo-item" style="background-image: url('./images/photo22.png');"></div>
+        <div class="photo-item" style="background-image: url('./images/photo23.jpeg');"></div>
+        <div class="photo-item" style="background-image: url('./images/photo24.jpeg');"></div>
+        <!-- Duplicate for seamless loop -->
+        <div class="photo-item" style="background-image: url('./images/photo21.jpeg');"></div>
+        <div class="photo-item" style="background-image: url('./images/photo22.png');"></div>
+        <div class="photo-item" style="background-image: url('./images/photo23.jpeg');"></div>
+        <div class="photo-item" style="background-image: url('./images/photo24.jpeg');"></div>
+      </div>
+      <div class="photo-overlay"></div>
+    </div>
+
+    <!-- Content -->
+    <div class="content-container">
+      <div class="question-box">
+        <h1 class="question-text">Will you be my Valentine?</h1>
+        <button id="yesButton" class="yes-button">Yes</button>
+      </div>
+      <div class="buttons-container">
+        <button id="noButton" class="no-button">No</button>
       </div>
     </div>
   </div>
 
-  <script type="module" src="./script.js"></script>
+  <!-- Second Page: Menu Page -->
+  <div id="menuPage" class="page">
+    <!-- Same Photo Background - 6 columns with 4 photos each (duplicated for infinite scroll) -->
+    <div class="photo-background">
+      <!-- Column 1: photos 1-4 (scrolling up) -->
+      <div class="photo-column scroll-up">
+        <div class="photo-item" style="background-image: url('./images/photo1.jpg');"></div>
+        <div class="photo-item" style="background-image: url('./images/photo2.jpg');"></div>
+        <div class="photo-item" style="background-image: url('./images/photo3.JPG');"></div>
+        <div class="photo-item" style="background-image: url('./images/photo4.jpg');"></div>
+        <!-- Duplicate for seamless loop -->
+        <div class="photo-item" style="background-image: url('./images/photo1.jpg');"></div>
+        <div class="photo-item" style="background-image: url('./images/photo2.jpg');"></div>
+        <div class="photo-item" style="background-image: url('./images/photo3.JPG');"></div>
+        <div class="photo-item" style="background-image: url('./images/photo4.jpg');"></div>
+      </div>
+      <!-- Column 2: photos 5-8 (scrolling down) -->
+      <div class="photo-column scroll-down">
+        <div class="photo-item" style="background-image: url('./images/photo5.jpg');"></div>
+        <div class="photo-item" style="background-image: url('./images/photo6.JPG');"></div>
+        <div class="photo-item" style="background-image: url('./images/photo7.jpg');"></div>
+        <div class="photo-item" style="background-image: url('./images/photo8.jpg');"></div>
+        <!-- Duplicate for seamless loop -->
+        <div class="photo-item" style="background-image: url('./images/photo5.jpg');"></div>
+        <div class="photo-item" style="background-image: url('./images/photo6.JPG');"></div>
+        <div class="photo-item" style="background-image: url('./images/photo7.jpg');"></div>
+        <div class="photo-item" style="background-image: url('./images/photo8.jpg');"></div>
+      </div>
+      <!-- Column 3: photos 9-12 (scrolling up) -->
+      <div class="photo-column scroll-up">
+        <div class="photo-item" style="background-image: url('./images/photo9.JPG');"></div>
+        <div class="photo-item" style="background-image: url('./images/photo10.jpeg');"></div>
+        <div class="photo-item" style="background-image: url('./images/photo11.png');"></div>
+        <div class="photo-item" style="background-image: url('./images/photo12.jpeg');"></div>
+        <!-- Duplicate for seamless loop -->
+        <div class="photo-item" style="background-image: url('./images/photo9.JPG');"></div>
+        <div class="photo-item" style="background-image: url('./images/photo10.jpeg');"></div>
+        <div class="photo-item" style="background-image: url('./images/photo11.png');"></div>
+        <div class="photo-item" style="background-image: url('./images/photo12.jpeg');"></div>
+      </div>
+      <!-- Column 4: photos 13-16 (scrolling down) -->
+      <div class="photo-column scroll-down">
+        <div class="photo-item" style="background-image: url('./images/photo13.jpeg');"></div>
+        <div class="photo-item" style="background-image: url('./images/photo14.jpeg');"></div>
+        <div class="photo-item" style="background-image: url('./images/photo15.jpeg');"></div>
+        <div class="photo-item" style="background-image: url('./images/photo16.jpeg');"></div>
+        <!-- Duplicate for seamless loop -->
+        <div class="photo-item" style="background-image: url('./images/photo13.jpeg');"></div>
+        <div class="photo-item" style="background-image: url('./images/photo14.jpeg');"></div>
+        <div class="photo-item" style="background-image: url('./images/photo15.jpeg');"></div>
+        <div class="photo-item" style="background-image: url('./images/photo16.jpeg');"></div>
+      </div>
+      <!-- Column 5: photos 17-20 (scrolling up) -->
+      <div class="photo-column scroll-up">
+        <div class="photo-item" style="background-image: url('./images/photo17.jpeg');"></div>
+        <div class="photo-item" style="background-image: url('./images/photo18.jpeg');"></div>
+        <div class="photo-item" style="background-image: url('./images/photo19.jpeg');"></div>
+        <div class="photo-item" style="background-image: url('./images/photo20.jpeg');"></div>
+        <!-- Duplicate for seamless loop -->
+        <div class="photo-item" style="background-image: url('./images/photo17.jpeg');"></div>
+        <div class="photo-item" style="background-image: url('./images/photo18.jpeg');"></div>
+        <div class="photo-item" style="background-image: url('./images/photo19.jpeg');"></div>
+        <div class="photo-item" style="background-image: url('./images/photo20.jpeg');"></div>
+      </div>
+      <!-- Column 6: photos 21-24 (scrolling down) -->
+      <div class="photo-column scroll-down">
+        <div class="photo-item" style="background-image: url('./images/photo21.jpeg');"></div>
+        <div class="photo-item" style="background-image: url('./images/photo22.png');"></div>
+        <div class="photo-item" style="background-image: url('./images/photo23.jpeg');"></div>
+        <div class="photo-item" style="background-image: url('./images/photo24.jpeg');"></div>
+        <!-- Duplicate for seamless loop -->
+        <div class="photo-item" style="background-image: url('./images/photo21.jpeg');"></div>
+        <div class="photo-item" style="background-image: url('./images/photo22.png');"></div>
+        <div class="photo-item" style="background-image: url('./images/photo23.jpeg');"></div>
+        <div class="photo-item" style="background-image: url('./images/photo24.jpeg');"></div>
+      </div>
+      <div class="photo-overlay"></div>
+    </div>
+
+    <!-- Content -->
+    <div class="menu-page-container">
+      <!-- Left Side: Romantic Message -->
+      <div class="message-section">
+        <div class="message-card">
+          <h2 class="message-title">My Love</h2>
+          <p class="message-text">
+            Every moment with you feels like a dream. Tonight, I want to celebrate us and all the beautiful memories we've created together. This menu is crafted with love, just for you.
+          </p>
+          <p class="message-text">
+            Thank you for being my everything. Happy Valentine's Day, my angel.
+          </p>
+          <p class="message-signature">Forever yours,</p>
+        </div>
+      </div>
+
+      <!-- Right Side: Menu -->
+      <div class="menu-section">
+        <div class="menu-card">
+          <h2 class="menu-title">Our Valentine's Menu</h2>
+          <div class="menu-content">
+            <div class="menu-item">
+              <h3 class="menu-item-title">Starter</h3>
+              <p class="menu-item-description">Fish Cakes with Homemade Tartar Sauce</p>
+            </div>
+            <div class="menu-item">
+              <h3 class="menu-item-title">Main Course</h3>
+              <p class="menu-item-description">Soup of the Day <br>with Grilled Cheese Skewers </p>
+            </div>
+            <div class="menu-item">
+              <h3 class="menu-item-title">Dessert</h3>
+              <p class="menu-item-description">Apple Fritters<br>with Vanilla Ice Cream</p>
+            </div>
+            <div class="menu-item">
+              <h3 class="menu-item-title">Drinks</h3>
+              <p class="menu-item-description">Moscow Mules<br>Chianti Classico</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Optional: Add confetti library for celebration effect -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+  <script type="module" src="script.js"></script>
 </body>
 </html>

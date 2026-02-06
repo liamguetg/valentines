@@ -1,157 +1,164 @@
-import confetti from 'https://cdn.skypack.dev/canvas-confetti';
-import anime from 'https://cdn.skypack.dev/animejs';
-
+// Page elements
+const questionPage = document.getElementById('questionPage');
+const menuPage = document.getElementById('menuPage');
 const yesButton = document.getElementById('yesButton');
 const noButton = document.getElementById('noButton');
-const imageDisplay = document.getElementById('imageDisplay');
-const valentineQuestion = document.getElementById('valentineQuestion');
-const responseButtons = document.getElementById('responseButtons');
 
-let noClickCount = 0;
-let buttonHeight = 48;
-let buttonWidth = 80;
-let fontSize = 20;
-const imagePaths = ['./images/image1.gif','./images/image2.gif','./images/image3.gif','./images/image4.gif','./images/image5.gif','./images/image6.gif','./images/image7.gif'];
+// Floating button animation
+let animationFrameId;
+let noButtonX = 0;
+let noButtonY = 0;
+let velocityX = 2;
+let velocityY = 2;
+const buttonSpeed = 2;
 
-//sound
-function playSound(soundPath) {const audio = new Audio(soundPath); audio.play();}
+// Initialize button position
+function initNoButtonPosition() {
+  const container = document.querySelector('.buttons-container');
+  const containerRect = container.getBoundingClientRect();
+  const buttonRect = noButton.getBoundingClientRect();
+  
+  // Start at a random position within the container area
+  noButtonX = Math.random() * (window.innerWidth - buttonRect.width);
+  noButtonY = Math.random() * (window.innerHeight - buttonRect.height);
+  
+  // Ensure it's not too close to the Yes button
+  const yesButtonRect = yesButton.getBoundingClientRect();
+  const minDistance = 150;
+  
+  if (Math.abs(noButtonX - yesButtonRect.left) < minDistance) {
+    noButtonX = yesButtonRect.left + minDistance + buttonRect.width;
+  }
+  if (Math.abs(noButtonY - yesButtonRect.top) < minDistance) {
+    noButtonY = yesButtonRect.top + minDistance + buttonRect.height;
+  }
+  
+  noButton.style.left = `${noButtonX}px`;
+  noButton.style.top = `${noButtonY}px`;
+}
 
-const getRandomNumber = (num) => {return Math.floor(Math.random() * (num + 1));};
+// Animate the floating No button
+function animateNoButton() {
+  const buttonRect = noButton.getBoundingClientRect();
+  const windowWidth = window.innerWidth;
+  const windowHeight = window.innerHeight;
   
-  //raunaway button
-  const runawayButtonLogic = (button) => {
-    const moveButton = function () {
-      if (this.textContent.trim() === "Say yes or else...") {
-        const top = getRandomNumber(window.innerHeight - this.offsetHeight);
-        const left = getRandomNumber(window.innerWidth - this.offsetWidth);
+  // Update position
+  noButtonX += velocityX;
+  noButtonY += velocityY;
   
-        animateMove(this, "top", top).play();
-        animateMove(this, "left", left).play();
-      }
-    };
-    button.addEventListener("mouseover", moveButton);
-    button.addEventListener("click", moveButton);};
+  // Bounce off walls
+  if (noButtonX <= 0 || noButtonX + buttonRect.width >= windowWidth) {
+    velocityX *= -1;
+    noButtonX = Math.max(0, Math.min(noButtonX, windowWidth - buttonRect.width));
+  }
   
-  const animateMove = (element, prop, pixels) =>
-    anime({
-      targets: element,
-      [prop]: `${pixels}px`,
-      easing: "easeOutCirc",
-      duration: 500,
-    });
+  if (noButtonY <= 0 || noButtonY + buttonRect.height >= windowHeight) {
+    velocityY *= -1;
+    noButtonY = Math.max(0, Math.min(noButtonY, windowHeight - buttonRect.height));
+  }
   
-  //no button
-  noButton.addEventListener("click", () => {
-    playSound('./sounds/click.mp3');
-    if (noClickCount < 4) {
-      noClickCount++;
-      imageDisplay.src = imagePaths[noClickCount] || "./images/image1.gif";
+  // Avoid Yes button (repel effect)
+  const yesButtonRect = yesButton.getBoundingClientRect();
+  const centerX = noButtonX + buttonRect.width / 2;
+  const centerY = noButtonY + buttonRect.height / 2;
+  const yesCenterX = yesButtonRect.left + yesButtonRect.width / 2;
+  const yesCenterY = yesButtonRect.top + yesButtonRect.height / 2;
   
-      //yes button gets thicc
-      buttonHeight += 35; buttonWidth += 35; fontSize += 25;
-      yesButton.style.height = `${buttonHeight}px`;
-      yesButton.style.width = `${buttonWidth}px`;
-      yesButton.style.fontSize = `${fontSize}px`;
+  const dx = centerX - yesCenterX;
+  const dy = centerY - yesCenterY;
+  const distance = Math.sqrt(dx * dx + dy * dy);
+  const minDistance = 200;
   
-      //no button text
-      const messages = ["No","Are you sure?","Babyy please?","Don't do this to me :(","Say yes or else...",];
+  if (distance < minDistance) {
+    // Repel from Yes button
+    const angle = Math.atan2(dy, dx);
+    velocityX = Math.cos(angle) * buttonSpeed * 1.5;
+    velocityY = Math.sin(angle) * buttonSpeed * 1.5;
+  }
   
-      if (noClickCount === 4) {
-        const newButton = document.createElement("button");
-        newButton.id = "runawayButton";
-        newButton.textContent = "Say yes or else...";
-        newButton.style.position = "absolute";
-        const yesButtonRect = yesButton.getBoundingClientRect();
-        newButton.style.top = `${yesButtonRect.bottom + 10}px`;
-        newButton.style.left = `${yesButtonRect.left + yesButtonRect.width / 2 + 24}px`;
+  // Apply position
+  noButton.style.left = `${noButtonX}px`;
+  noButton.style.top = `${noButtonY}px`;
+  
+  // Add slight rotation for more natural movement
+  const rotation = Math.sin(Date.now() / 500) * 5;
+  noButton.style.transform = `rotate(${rotation}deg)`;
+  
+  animationFrameId = requestAnimationFrame(animateNoButton);
+}
 
-        newButton.style.backgroundColor = "#ff5a5f";
-        newButton.style.color = "white";
-        newButton.style.padding = "12px 20px";
-        newButton.style.borderRadius = "8px";
-        newButton.style.cursor = "pointer";
-        newButton.style.fontSize = "20px";
-        newButton.style.fontWeight = "bold";
+// Prevent clicking on No button
+noButton.addEventListener('click', (e) => {
+  e.preventDefault();
+  e.stopPropagation();
+  // Make it move away quickly when attempted to click
+  velocityX = (Math.random() - 0.5) * 8;
+  velocityY = (Math.random() - 0.5) * 8;
+});
+
+noButton.addEventListener('mouseenter', () => {
+  // Move away when hovered
+  velocityX = (Math.random() - 0.5) * 6;
+  velocityY = (Math.random() - 0.5) * 6;
+});
+
+// Yes button click handler
+yesButton.addEventListener('click', () => {
+  // Stop the floating animation
+  cancelAnimationFrame(animationFrameId);
   
-        noButton.replaceWith(newButton);
-  //make no button go zoom with new button
-        runawayButtonLogic(newButton);
-      } else {
-        noButton.textContent = messages[noClickCount];
-      }
-    }
-  });
+  // Transition to menu page
+  questionPage.classList.remove('active');
+  setTimeout(() => {
+    menuPage.classList.add('active');
+  }, 300);
   
-  //yes button
-  yesButton.addEventListener("click", () => {
-    playSound('./sounds/click.mp3');
-    imageDisplay.remove(); 
-    responseButtons.style.display = "none"; 
-  
-    //yes page
-    valentineQuestion.innerHTML = `
-      <img src="./images/image7.gif" alt="Celebration duckie" style="display: block; margin: 0 auto; width: 200px; height: auto;"/>
-      Congratulations!!<br>
-      <span style="font-size: 20px; color: #bd1e59;">You have scored a baddie for Valentine's Day! <3</span>
-    `;
-    valentineQuestion.style.textAlign = "center"; 
-  
-    //make image go boing
-    const bounceImage = document.createElement("img");
-    bounceImage.src = "./images/baddie.jpg";
-    bounceImage.alt = "Baddie";
-    bounceImage.style.position = "absolute";
-    bounceImage.style.width = "300px";
-    bounceImage.style.height = "325px";
-    bounceImage.style.borderRadius = "50%";
-    document.body.appendChild(bounceImage);
-  
-    startBouncing(bounceImage);
-  
+  // Confetti celebration effect
+  if (typeof confetti !== 'undefined') {
     confetti({
       particleCount: 150,
-      spread: 90,
-      origin: { x: 0.5, y: 0.7 },
-      colors: ["#FF5A5F", "#3DCC91", "#FFD1DC"],
+      spread: 70,
+      origin: { y: 0.6 },
+      colors: ['#FF69B4', '#FF1493', '#DC143C', '#FFB6C1', '#8B1538']
     });
-  });
-  
-  function startBouncing(element) {
-    let x = Math.random() * (window.innerWidth - element.offsetWidth);
-    let y = Math.random() * (window.innerHeight - element.offsetHeight);
-    let dx = 2; let dy = 2; let rotation = 0;
-  
-    function move() {
-      const viewportWidth = window.innerWidth - element.offsetWidth;
-      const viewportHeight = window.innerHeight - element.offsetHeight;
-  
-      if (x <= 0 || x >= viewportWidth) {dx *= -1; rotation += 15;
-        anime({
-          targets: element,
-          translateX: dx > 0 ? x + 20 : x - 20, 
-          duration: 300,
-          easing: "easeOutElastic(1, .6)", 
+    
+    // Additional burst after a delay
+    setTimeout(() => {
+      confetti({
+        particleCount: 100,
+        angle: 60,
+        spread: 55,
+        origin: { x: 0 },
+        colors: ['#FF69B4', '#FF1493', '#DC143C', '#FFB6C1', '#8B1538']
       });
+      confetti({
+        particleCount: 100,
+        angle: 120,
+        spread: 55,
+        origin: { x: 1 },
+        colors: ['#FF69B4', '#FF1493', '#DC143C', '#FFB6C1', '#8B1538']
+      });
+    }, 300);
   }
+});
 
-      if (y <= 0 || y >= viewportHeight) {dy *= -1; rotation += 15;
-        anime({
-          targets: element,
-          translateY: dy > 0 ? y + 20 : y - 20, 
-          duration: 300,
-          easing: "easeOutElastic(1, .6)", 
-      });
+// Initialize on page load
+window.addEventListener('load', () => {
+  initNoButtonPosition();
+  animateNoButton();
+});
+
+// Handle window resize
+window.addEventListener('resize', () => {
+  // Keep button within bounds
+  const buttonRect = noButton.getBoundingClientRect();
+  if (noButtonX + buttonRect.width > window.innerWidth) {
+    noButtonX = window.innerWidth - buttonRect.width;
   }
-        
-      x += dx; y += dy;
-  
-      element.style.left = `${x}px`;
-      element.style.top = `${y}px`;
-      element.style.transform = `rotate(${rotation}deg)`;
-  
-      requestAnimationFrame(move); 
-    }
-  
-    move();
+  if (noButtonY + buttonRect.height > window.innerHeight) {
+    noButtonY = window.innerHeight - buttonRect.height;
   }
-  
+  noButton.style.left = `${noButtonX}px`;
+  noButton.style.top = `${noButtonY}px`;
+});
